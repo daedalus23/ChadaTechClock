@@ -9,6 +9,8 @@
 #include "Gui.h"    // Include the header file for the Gui class
 
 
+// This is a test line!
+
 int main() {
     Clock clock;
     Gui gui{clock};
