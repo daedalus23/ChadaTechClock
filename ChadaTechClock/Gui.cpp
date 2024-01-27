@@ -13,10 +13,7 @@
 
 
 // Define a constructor for the Gui class
-Gui::Gui(Clock& clockInstance) : clock(clockInstance) {
-    std::atomic<bool> exitFlag = false;
-    int returnLine = 12;
-    std::string USER_EXIT_INPUT;
+Gui::Gui(Clock& clockInstance, std::atomic<bool>& exitFlag) : clock(clockInstance), exitFlag(exitFlag) {
     // Define the initial menu items
     menuMap = {
         {"1", {"Add one hour.", [this]() { clock.AddOneHour(); }}},
@@ -36,10 +33,15 @@ Gui::Gui(Clock& clockInstance) : clock(clockInstance) {
 
 // Define a function to move the cursor to a specific location on the screen
 void Gui::Gotoxy(int x, int y) {
-    COORD coord;
+    COORD coord{};
     coord.X = x;
     coord.Y = y;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+std::string Gui::CreateStringLength(size_t n, char c) {
+    // Create a string of length n, filled with character c
+    return std::string(n, c);
 }
 
 void Gui::ClearLine(int line) {
@@ -52,32 +54,31 @@ void Gui::ClearScreen() {
 }
 
 void Gui::PrintMenu() {
-    const int maxOptionWidth = 22; // Maximum width for option text
     int line = MENU_START_LINE;
 
     ClearLine(line); // Optional: Clear the line before printing
     Gotoxy(0, line++);
-    std::cout << std::setfill(' ') << std::setw(4) << ' ' << "***********************";
+    std::cout << std::setfill(' ') << std::setw(4) << ' ' << CreateStringLength(MENU_BOARD_WIDTH, BOARD_ELEMENT);
 
     for (const auto& option : menuMap) {
         int optionTextLength = option.first.length() + 2 + option.second.first.length();
-        int padding = maxOptionWidth - optionTextLength;
+        int padding = MENU_OPTION_WIDTH - optionTextLength;
 
         ClearLine(line); // Optional: Clear the line before printing
         Gotoxy(0, line++);
-        std::cout << std::setw(4) << ' ' << "* " << option.first << ": " << option.second.first
-            << std::setfill(' ') << std::setw(padding) << "*";
+        std::cout << std::setw(4) << ' ' << BOARD_ELEMENT << ' ' << option.first << ": " << option.second.first
+            << std::setfill(' ') << std::setw(padding) << BOARD_ELEMENT;
     }
 
     ClearLine(line); // Optional: Clear the line before printing
     Gotoxy(0, line++);
-    std::cout << std::setw(4) << ' ' << "***********************";
+    std::cout << std::setw(4) << ' ' << CreateStringLength(MENU_BOARD_WIDTH, BOARD_ELEMENT);
 }
 
 void Gui::HandleInput() {
     Gotoxy(0, INPUT_LINE);
     ClearLine(INPUT_LINE);
-    std::cout << "Enter your choice: ";
+    std::cout << CHOICE_MSG;
     std::cin >> userInput;
 
     Gotoxy(0, ACTION_MESSAGE_LINE);
@@ -88,14 +89,14 @@ void Gui::HandleInput() {
         std::cout << "Last command: " << menuMap[userInput].first;
     }
     else {
-        std::cout << "Invalid input, please try again.";
+        std::cout << INVALID_MSG;
     }
 
     // Exit condition
     if (userInput == USER_EXIT_INPUT) {
         exitFlag.store(true);
         this->Gotoxy(0, ACTION_MESSAGE_LINE);
-        std::cout << "Exiting program, goodbye...";
+        std::cout << EXIT_MSG;
         std::this_thread::sleep_for(std::chrono::seconds(1)); // Give time to read message
     }
 }
@@ -117,31 +118,31 @@ void Gui::PrintClock(const std::tuple<std::tuple<std::string, std::string>, std:
     // Print the clock titles and times side by side
     // Print header
     Gotoxy(START_X, START_Y);
-    std::cout << std::setfill('*') << std::setw(BOARD_WIDTH) << '*' << '\t';
+    std::cout << std::setfill(BOARD_ELEMENT) << std::setw(CLOCK_BOARD_WIDTH) << BOARD_ELEMENT << '\t';
     Gotoxy(clock24StartX, START_Y);
-    std::cout << std::setfill('*') << std::setw(BOARD_WIDTH) << '*';
+    std::cout << std::setfill(BOARD_ELEMENT) << std::setw(CLOCK_BOARD_WIDTH) << BOARD_ELEMENT;
 
     // Print titles
     // 12-hour clock
     Gotoxy(START_X, START_Y + 1);
-    std::cout << "*" << '\t' << title12 << '\t' << " *" << '\t';
+    std::cout << BOARD_ELEMENT << '\t' << title12 << '\t' << " " << BOARD_ELEMENT << '\t';
     // 24-hour clock
     Gotoxy(clock24StartX, START_Y + 1);
-    std::cout << "*" << '\t' << title24 << '\t' << " *";
+    std::cout << BOARD_ELEMENT << '\t' << title24 << '\t' << " " << BOARD_ELEMENT;
 
     // Print times
     // 12-hour clock
     Gotoxy(START_X, START_Y + 2);
-    std::cout << "*" << '\t' << " " << time12 << '\t' << " *" << '\t';
+    std::cout << BOARD_ELEMENT << '\t' << " " << time12 << '\t' << " " << BOARD_ELEMENT << '\t';
     // 24-hour clock
     Gotoxy(clock24StartX, START_Y + 2);
-    std::cout << "*" << '\t' << "   " << time24 << '\t' << " *";
+    std::cout << BOARD_ELEMENT << '\t' << "   " << time24 << '\t' << " " << BOARD_ELEMENT;
 
     // Print footer
     Gotoxy(START_X, START_Y + 3);
-    std::cout << std::setfill('*') << std::setw(BOARD_WIDTH) << '*' << '\t';
+    std::cout << std::setfill(BOARD_ELEMENT) << std::setw(CLOCK_BOARD_WIDTH) << BOARD_ELEMENT << '\t';
     Gotoxy(clock24StartX, START_Y + 3);
-    std::cout << std::setfill('*') << std::setw(BOARD_WIDTH) << '*';
+    std::cout << std::setfill(BOARD_ELEMENT) << std::setw(CLOCK_BOARD_WIDTH) << BOARD_ELEMENT;
 
     // Move the cursor to the next line
     Gotoxy(INPUT_LINE_LENGTH, START_Y + INPUT_LINE);

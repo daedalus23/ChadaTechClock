@@ -9,25 +9,26 @@
 #include "Gui.h"    // Include the header file for the Gui class
 
 
-// This is a test line!
 
 int main() {
     Clock clock;
-    Gui gui{clock};
     std::atomic<bool> exitFlag = false;
+    Gui app{ clock, exitFlag };
 
     // Create a thread to handle clock updates and display
-    std::thread clockThread([&clock, &gui, &exitFlag]() {
+    std::thread clockThread([&clock, &app, &exitFlag]() {
         while (!exitFlag.load()) {
             auto clocks = clock.GetTime();
-            gui.PrintClock(clocks);
+            app.PrintClock(clocks);
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
         });
 
-    exitFlag = gui.Run();
+    // Run the application's GUI event loop
+    app.Run();
 
-    // Wait for the clock thread to finish
+    // Signal the clock thread to stop and wait for it to finish
+    exitFlag.store(true);
     if (clockThread.joinable()) {
         clockThread.join();
     }

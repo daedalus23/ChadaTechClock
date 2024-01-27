@@ -6,6 +6,7 @@
 #include <string>
 #include <tuple>
 
+
 class Clock {
 private:
     std::chrono::system_clock::time_point now; // Stores the current time as time_point
