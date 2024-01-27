@@ -14,6 +14,7 @@
 
 // Define a constructor for the Gui class
 Gui::Gui(Clock& clockInstance, std::atomic<bool>& exitFlag) : clock(clockInstance), exitFlag(exitFlag) {
+    
     // Define the initial menu items
     menuMap = {
         {"1", {"Add one hour.", [this]() { clock.AddOneHour(); }}},
@@ -58,7 +59,7 @@ void Gui::PrintMenu() {
 
     ClearLine(line); // Optional: Clear the line before printing
     Gotoxy(0, line++);
-    std::cout << std::setfill(' ') << std::setw(4) << ' ' << CreateStringLength(MENU_BOARD_WIDTH, BOARD_ELEMENT);
+    std::cout << std::setfill(' ') << std::setw(MENU_PADDING) << ' ' << CreateStringLength(MENU_BOARD_WIDTH, BOARD_ELEMENT);
 
     for (const auto& option : menuMap) {
         int optionTextLength = option.first.length() + 2 + option.second.first.length();
@@ -66,13 +67,13 @@ void Gui::PrintMenu() {
 
         ClearLine(line); // Optional: Clear the line before printing
         Gotoxy(0, line++);
-        std::cout << std::setw(4) << ' ' << BOARD_ELEMENT << ' ' << option.first << ": " << option.second.first
+        std::cout << std::setw(MENU_PADDING) << ' ' << BOARD_ELEMENT << ' ' << option.first << ": " << option.second.first
             << std::setfill(' ') << std::setw(padding) << BOARD_ELEMENT;
     }
 
     ClearLine(line); // Optional: Clear the line before printing
     Gotoxy(0, line++);
-    std::cout << std::setw(4) << ' ' << CreateStringLength(MENU_BOARD_WIDTH, BOARD_ELEMENT);
+    std::cout << std::setw(MENU_PADDING) << ' ' << CreateStringLength(MENU_BOARD_WIDTH, BOARD_ELEMENT);
 }
 
 void Gui::HandleInput() {

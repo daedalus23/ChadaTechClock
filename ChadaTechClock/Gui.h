@@ -29,6 +29,7 @@ class Gui
         static const int MENU_START_LINE = 5;
         static const int MENU_OPTION_WIDTH = 22;
         static const int MENU_BOARD_WIDTH = 24;
+        static const int MENU_PADDING = 20;
 
         static const int CLOCK_GAP = 40;
         static const int CLOCK_BOARD_WIDTH = 26;

@@ -9,8 +9,12 @@
 #include "Gui.h"    // Include the header file for the Gui class
 
 
-
 int main() {
+
+    HWND consoleWindow = GetConsoleWindow();
+    // Set the window title
+    SetWindowTextA(consoleWindow, "Chada Tech Clock");
+
     Clock clock;
     std::atomic<bool> exitFlag = false;
     Gui app{ clock, exitFlag };

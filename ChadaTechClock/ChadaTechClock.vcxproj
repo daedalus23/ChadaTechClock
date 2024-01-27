@@ -134,6 +134,15 @@
   <ItemGroup>
     <ClInclude Include="Clock.h" />
     <ClInclude Include="Gui.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ChadaTechClock.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\..\Downloads\CHADA TECH Logo.ico" />
+    <Image Include="..\..\..\..\..\Downloads\CHADA TECH Logo.png" />
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
