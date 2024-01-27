@@ -64,6 +64,7 @@ void Clock::ResyncTime() {
 
 std::tuple<std::tuple<std::string, std::string>, std::tuple<std::string, std::string>> Clock::GetTime() {
     this->AddOneSecond();
+
     auto time12 = FormatTime("12");
     auto time24 = FormatTime("24");
     return std::make_tuple(time12, time24);
